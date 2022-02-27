@@ -1,6 +1,5 @@
 package com.nttdata.model;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
