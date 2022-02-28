@@ -2,8 +2,10 @@ server:
   port: 8082
 
 spring:
-  data:
-    mongodb:
-      database: transactionBD
-      host: localhost
-      port: 27017
+  application:
+    name: transaction-service
+  config:
+    import: optional:configserver:http://localhost:9010
+  cloud:
+    config:
+      profile: dev
