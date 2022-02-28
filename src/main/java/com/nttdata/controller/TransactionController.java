@@ -1,5 +1,7 @@
 package com.nttdata.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,8 @@ import reactor.core.publisher.Flux;
 @RestController()
 @RequestMapping("/transaction")
 public class TransactionController {
+	
+	private static Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
 	@Autowired
 	private TransactionService transactionService;
@@ -26,12 +30,14 @@ public class TransactionController {
 	@PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public void createEmp (@RequestBody Transaction transaction){
+		logger.info("TransactionController - createEmp - TRANSACTION DATA: " + transaction);
 		transactionService.createTransaction(transaction);
     }
 
     @GetMapping(value = "/getAll",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     public Flux<Transaction> findAll(){
+    	logger.info("TransactionController - findAllTransaction");
         return transactionService.findAllTransaction();
     }
 
