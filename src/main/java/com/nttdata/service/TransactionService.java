@@ -7,6 +7,7 @@ import reactor.core.publisher.Flux;
 
 public interface TransactionService {
 
-    void createTransaction(Transaction e);
+    String createTransaction(Transaction e);
     Flux<Transaction> findAllTransaction ();
+    Flux<Transaction> findByIdCustomer(String idCustomer);
 }

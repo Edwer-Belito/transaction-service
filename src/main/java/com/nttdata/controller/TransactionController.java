@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +30,9 @@ public class TransactionController {
 	
 	@PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEmp (@RequestBody Transaction transaction){
-		logger.info("TransactionController - createEmp - TRANSACTION DATA: " + transaction);
-		transactionService.createTransaction(transaction);
+    public String createTransaction (@RequestBody Transaction transaction){
+		logger.info("TransactionController - createTransaction - TRANSACTION DATA: " + transaction);
+		return transactionService.createTransaction(transaction);
     }
 
     @GetMapping(value = "/getAll",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -41,5 +42,12 @@ public class TransactionController {
         return transactionService.findAllTransaction();
     }
 
+    
+    @GetMapping(value = "/getByCustomerId/{customerId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Flux<Transaction> findByIdCustomer(@PathVariable(name = "customerId") String customerId){
+    	logger.info("TransactionController - findByIdCustomer");
+        return transactionService.findByIdCustomer(customerId);
+    }
 
 }

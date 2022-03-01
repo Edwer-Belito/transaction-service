@@ -1,5 +1,6 @@
 package com.nttdata.model;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -22,5 +23,6 @@ public class Transaction {
 	public String transactionType;
 	public String idCustomer;
 	public Product product;
+	public BigDecimal amount;
 
 }

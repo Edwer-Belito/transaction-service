@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class Product {
 
 	public String code;
-	public String name;
-	public String type;
 	public BigDecimal saldo;
 	
 }

@@ -30,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService {
 	 * Consume servicio de actualizacion de saldo
 	 */
 	@Override
-	public void createTransaction(Transaction transaction) {
+	public String createTransaction(Transaction transaction) {
 
 		try {
 
@@ -40,9 +40,9 @@ public class TransactionServiceImpl implements TransactionService {
 			logger.info("REGISTRO DE LA TRANSACCION - FIN");
 			
 			if (transaction.transactionType.equals("deposito"))
-				transaction.product.saldo = transaction.product.saldo.abs();
+				transaction.product.saldo = transaction.amount.abs();
 			else
-				transaction.product.saldo = transaction.product.saldo.negate();
+				transaction.product.saldo = transaction.amount.negate();
 
 			
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - INICIO");
@@ -56,8 +56,11 @@ public class TransactionServiceImpl implements TransactionService {
 
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - FIN");
 			
+			return "Transaction succesfull";
+			
 		} catch (Exception e) {
 			logger.error("ERROR EN createTransaction: " + e.getMessage(),e);
+			return "Transaction failure";
 		}
 
 	}
@@ -67,6 +70,12 @@ public class TransactionServiceImpl implements TransactionService {
 		
 		logger.info("TransactionServiceImpl - findAllTransaction");
 		return transactionRepository.findAll();
+	}
+
+	@Override
+	public Flux<Transaction> findByIdCustomer(String idCustomer) {
+		logger.info("TransactionServiceImpl - findByIdCustomer: "+idCustomer);
+		return transactionRepository.findByIdCustomer(idCustomer);
 	}
 
 }
