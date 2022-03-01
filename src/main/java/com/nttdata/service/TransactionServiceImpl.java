@@ -1,5 +1,7 @@
 package com.nttdata.service;
 
+import java.time.DayOfWeek;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import com.nttdata.model.Customer;
 import com.nttdata.model.Product;
 import com.nttdata.model.Transaction;
 import com.nttdata.repository.TransactionRepository;
+import com.nttdata.utility.AppConfig;
+import com.nttdata.utility.Constantes;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
+	
+	@Autowired
+	private AppConfig appConfig;
 
 	/*
 	 * Metodo para registrar la transaccion de deposito o retiro
@@ -33,17 +40,23 @@ public class TransactionServiceImpl implements TransactionService {
 	public String createTransaction(Transaction transaction) {
 
 		try {
+			
+			//if (transaction.transactionType.equals(appConfig.application.users.operations.split(",")[0]))
+			if (transaction.transactionType.equals(Constantes.DEPOSITO))
+				transaction.product.saldo = transaction.amount.abs();
+			//else if (transaction.transactionType.equals(appConfig.application.users.operations.split(",")[1]))
+			else if (transaction.transactionType.equals(Constantes.RETIRO))
+				transaction.product.saldo = transaction.amount.negate();
+			else
+				return "Transaction unsupported";
 
 			logger.info("REGISTRO DE LA TRANSACCION - INICIO");
+			//transaction.userInsert = appConfig.application.users.transactionId;
+			//transaction.enviromentInsert = appConfig.application.config.description;
+			transaction.enviromentInsert = "dev";
 			transactionRepository.save(transaction).log().subscribe();
 
 			logger.info("REGISTRO DE LA TRANSACCION - FIN");
-			
-			if (transaction.transactionType.equals("deposito"))
-				transaction.product.saldo = transaction.amount.abs();
-			else
-				transaction.product.saldo = transaction.amount.negate();
-
 			
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - INICIO");
 			

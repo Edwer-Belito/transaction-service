@@ -24,5 +24,6 @@ public class Transaction {
 	public String idCustomer;
 	public Product product;
 	public BigDecimal amount;
+	public String enviromentInsert;
 
 }
