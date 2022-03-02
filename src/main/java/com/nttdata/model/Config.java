@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class Config {
 	
-	public String profile;
-	public String description;
+	private String profile;
+	private String description;
 }

@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 public class Transaction {
 	
 	@Id
-	public String idTransaccion = UUID.randomUUID().toString().substring(0, 10);
-	public String transactionType;
-	public String idCustomer;
-	public Product product;
-	public BigDecimal amount;
-	public String enviromentInsert;
+	private String idTransaccion = UUID.randomUUID().toString().substring(0, 10);
+	private String transactionType;
+	private String idCustomer;
+	private Product product;
+	private BigDecimal amount;
+	private String enviromentInsert;
 
 }

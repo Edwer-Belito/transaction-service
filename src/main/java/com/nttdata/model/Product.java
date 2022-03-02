@@ -2,6 +2,7 @@ package com.nttdata.model;
 
 import java.math.BigDecimal;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Product {
 
 	public String code;
+	
 	public BigDecimal saldo;
 	
 }

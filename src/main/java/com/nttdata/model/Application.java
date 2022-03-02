@@ -7,11 +7,13 @@ import lombok.Data;
 @Data
 public class Application {
 
-	public String location;
+	private String location;
 	
 	
 	@NestedConfigurationProperty
-	public Config config;
+	private Config config;
 	
+	@NestedConfigurationProperty
+	private Operation operation;
 
 }

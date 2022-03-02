@@ -1,6 +1,5 @@
 package com.nttdata.service;
 
-import java.time.DayOfWeek;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import com.nttdata.model.Product;
 import com.nttdata.model.Transaction;
 import com.nttdata.repository.TransactionRepository;
 import com.nttdata.utility.AppConfig;
-import com.nttdata.utility.Constantes;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,26 +32,23 @@ public class TransactionServiceImpl implements TransactionService {
 
 	/*
 	 * Metodo para registrar la transaccion de deposito o retiro
-	 * Consume servicio de actualizacion de saldo
+	 * Consume servicio de actualizacion de saldo del ms customer-service
 	 */
 	@Override
 	public String createTransaction(Transaction transaction) {
 
 		try {
 			
-			//if (transaction.transactionType.equals(appConfig.application.users.operations.split(",")[0]))
-			if (transaction.transactionType.equals(Constantes.DEPOSITO))
-				transaction.product.saldo = transaction.amount.abs();
-			//else if (transaction.transactionType.equals(appConfig.application.users.operations.split(",")[1]))
-			else if (transaction.transactionType.equals(Constantes.RETIRO))
-				transaction.product.saldo = transaction.amount.negate();
+			if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getDEPOSITO()))
+				transaction.getProduct().setSaldo(transaction.getAmount().abs());
+			else if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getRETIRO()))
+				transaction.getProduct().setSaldo(transaction.getAmount().negate());
 			else
 				return "Transaction unsupported";
 
 			logger.info("REGISTRO DE LA TRANSACCION - INICIO");
-			//transaction.userInsert = appConfig.application.users.transactionId;
-			//transaction.enviromentInsert = appConfig.application.config.description;
-			transaction.enviromentInsert = "dev";
+
+			transaction.setEnviromentInsert(appConfig.getApplication().getConfig().getDescription());
 			transactionRepository.save(transaction).log().subscribe();
 
 			logger.info("REGISTRO DE LA TRANSACCION - FIN");
@@ -63,8 +58,8 @@ public class TransactionServiceImpl implements TransactionService {
 			WebClient webClient = WebClient.builder().baseUrl("http://localhost:8081")
 					.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
 
-			webClient.put().uri("/customer/updateSaldo/" + transaction.idCustomer)
-					.body(Mono.just(transaction.product), Product.class).accept(MediaType.APPLICATION_JSON).retrieve()
+			webClient.put().uri("/customer/updateSaldo/" + transaction.getIdCustomer())
+					.body(Mono.just(transaction.getProduct()), Product.class).accept(MediaType.APPLICATION_JSON).retrieve()
 					.bodyToMono(Customer.class).subscribe();
 
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - FIN");
