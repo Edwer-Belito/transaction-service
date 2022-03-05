@@ -31,7 +31,7 @@ public class TransactionController {
 	@PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public String createTransaction (@RequestBody Transaction transaction){
-		logger.info("TransactionController - createTransaction - TRANSACTION DATA: " + transaction);
+		logger.info("TransactionController - createTransaction - TRANSACTION DATA: {}" , transaction);
 		return transactionService.createTransaction(transaction);
     }
 

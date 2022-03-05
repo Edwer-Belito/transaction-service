@@ -24,6 +24,9 @@ public class Transaction {
 	private String idCustomer;
 	private Product product;
 	private BigDecimal amount;
+	private BigDecimal commission = BigDecimal.ZERO;
+	private String period;
+	private String dateRegistry;
 	private String enviromentInsert;
 
 }

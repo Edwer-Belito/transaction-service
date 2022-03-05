@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
-import com.nttdata.model.Application;
+import com.nttdata.common.Application;
 
 import lombok.Data;
 

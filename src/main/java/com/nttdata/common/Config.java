@@ -1,4 +1,4 @@
-package com.nttdata.model;
+package com.nttdata.common;
 
 import lombok.Data;
 

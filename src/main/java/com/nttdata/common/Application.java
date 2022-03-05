@@ -1,4 +1,4 @@
-package com.nttdata.model;
+package com.nttdata.common;
 
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
