@@ -21,6 +21,7 @@ public class Transaction {
 	@Id
 	private String idTransaccion = UUID.randomUUID().toString().substring(0, 10);
 	private String transactionType;
+	private String movementType;
 	private String idCustomer;
 	private Product product;
 	private BigDecimal amount;

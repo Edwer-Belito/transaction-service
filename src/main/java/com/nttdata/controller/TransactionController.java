@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nttdata.dto.TransferDto;
 import com.nttdata.model.Transaction;
 import com.nttdata.service.TransactionService;
 
@@ -32,6 +33,7 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     public String createTransaction (@RequestBody Transaction transaction){
 		logger.info("TransactionController - createTransaction - TRANSACTION DATA: {}" , transaction);
+		transaction.setMovementType("OPERATION");
 		return transactionService.createTransaction(transaction);
     }
 
@@ -48,6 +50,13 @@ public class TransactionController {
     public Flux<Transaction> findByIdCustomer(@PathVariable(name = "customerId") String customerId){
     	logger.info("TransactionController - findByIdCustomer");
         return transactionService.findByIdCustomer(customerId);
+    }
+    
+    @PostMapping("/transfer")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createTransaction (@RequestBody TransferDto transferDto){
+		logger.info("TransactionController - createTransaction - TRANSFER DATA: {}" , transferDto);
+		return transactionService.createTransfer(transferDto);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.nttdata.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -43,16 +44,24 @@ public class TransactionServiceImpl implements TransactionService {
 
 		try {
 
-			// VALID OPERATION
-			if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getDeposit())
-					|| transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getPayment()))
-				transaction.getProduct().setSaldo(transaction.getAmount().abs());
-			else if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getRetirement())
-					|| transaction.getTransactionType()
-							.equals(appConfig.getApplication().getOperation().getConsumption()))
-				transaction.getProduct().setSaldo(transaction.getAmount().negate());
-			else
-				return "Transaction unsupported";
+			// VALID TRANSACTION TYPE
+			if (transaction.getMovementType().equals("OPERATION")) {
+
+				if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getDeposit())
+						|| transaction.getTransactionType()
+								.equals(appConfig.getApplication().getOperation().getPayment()))
+					transaction.getProduct().setSaldo(transaction.getAmount().abs());
+				else if (transaction.getTransactionType()
+						.equals(appConfig.getApplication().getOperation().getRetirement())
+						|| transaction.getTransactionType()
+								.equals(appConfig.getApplication().getOperation().getConsumption()))
+					transaction.getProduct().setSaldo(transaction.getAmount().negate());
+				else
+					return "Transaction unsupported";
+
+			} else if (transaction.getMovementType().equals("TRANSFER")) {
+
+			}
 
 			// VALID PRODUCT
 			if (!validProductCode(transaction.getProduct().getCode())) {
@@ -62,9 +71,8 @@ public class TransactionServiceImpl implements TransactionService {
 			// VALID COUNT TRANSACTION BY CUSTOMER FOR COMMISION
 			Mono<Long> countTransactionsCustomer = countTransactionByCustomerId(transaction.getIdCustomer());
 
-			if (countTransactionsCustomer.toFuture().get() > appConfig.getApplication().getOperation()
+			if (countTransactionsCustomer.toFuture().get() >= appConfig.getApplication().getOperation()
 					.getNumberOperationAllowed()) {
-			//if(transactionRepository.findByIdCustomer(transaction.getIdCustomer()).count(). >4) {
 				transaction.setCommission(appConfig.getApplication().getOperation().getCommision());
 				transaction.getProduct().setSaldo(transaction.getProduct().getSaldo()
 						.subtract(appConfig.getApplication().getOperation().getCommision()));
@@ -76,7 +84,7 @@ public class TransactionServiceImpl implements TransactionService {
 			transaction.setEnviromentInsert(appConfig.getApplication().getConfig().getDescription());
 			LocalDate localDate = LocalDate.now();
 			transaction.setDateRegistry(localDate.toString());
-			transaction.setPeriod(""+localDate.getYear()+localDate.getMonth());
+			transaction.setPeriod("" + localDate.getYear() + localDate.getMonth().getValue());
 			transactionRepository.save(transaction).log().subscribe();
 
 			logger.info("REGISTRO DE LA TRANSACCION - FIN");
@@ -129,8 +137,43 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public String createTransfer(TransferDto dtoTransferDto) {
-		
-		return null;
+
+		// VALID MOVEMENT
+		if (!dtoTransferDto.getMovementType().equals("TRANSFER"))
+			return "TYPE MOVEMENT INVALID";
+
+		// VALID AMOUNT
+		if (dtoTransferDto.getAmount().signum() == -1)
+			return "AMOUNT IS NEGATIVE - INVALID";
+
+		try {
+
+			// ADD
+			Transaction transactionOne = new Transaction();
+			transactionOne.setMovementType(dtoTransferDto.getMovementType());
+			transactionOne.setTransactionType(appConfig.getApplication().getOperation().getDeposit());
+			transactionOne.setIdCustomer(dtoTransferDto.getCustomerDestination().getIdCustomer());
+			transactionOne.setProduct(new Product(dtoTransferDto.getCustomerDestination().getProduct().getCode(),
+					dtoTransferDto.getAmount()));
+			transactionOne.setAmount(dtoTransferDto.getAmount());
+			this.createTransaction(transactionOne);
+
+			// SUBSTRACT
+			Transaction transactionTwo = new Transaction();
+			transactionTwo.setMovementType(dtoTransferDto.getMovementType());
+			transactionTwo.setTransactionType(appConfig.getApplication().getOperation().getRetirement());
+			transactionTwo.setIdCustomer(dtoTransferDto.getCustomerOrigin().getIdCustomer());
+			transactionTwo.setProduct(new Product(dtoTransferDto.getCustomerOrigin().getProduct().getCode(),
+					dtoTransferDto.getAmount().negate()));
+			transactionTwo.setAmount(dtoTransferDto.getAmount());
+			this.createTransaction(transactionTwo);
+
+			return "Transfer succesfull";
+
+		} catch (Exception e) {
+			return "Transfer failure";
+		}
+
 	}
 
 }

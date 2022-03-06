@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransferDto {
 	
+	private String movementType;
 	private Customer customerOrigin;
 	private Customer customerDestination;
 	private BigDecimal amount;
