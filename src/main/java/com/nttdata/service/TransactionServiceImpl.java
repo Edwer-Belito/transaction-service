@@ -51,7 +51,7 @@ public class TransactionServiceImpl implements TransactionService {
 		try {
 
 			// VALID TRANSACTION TYPE
-			if (transaction.getMovementType().equals("OPERATION")) {
+			if (!transaction.getMovementType().equals("TRANSFER")) {
 
 				if (transaction.getTransactionType().equals(appConfig.getApplication().getOperation().getDeposit())
 						|| transaction.getTransactionType()
@@ -64,8 +64,6 @@ public class TransactionServiceImpl implements TransactionService {
 					transaction.getProduct().setSaldo(transaction.getAmount().negate());
 				else
 					return "Transaction unsupported";
-
-			} else if (transaction.getMovementType().equals("TRANSFER")) {
 
 			}
 
