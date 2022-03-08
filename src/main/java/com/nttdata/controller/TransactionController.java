@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nttdata.dto.ReporteComissionsDto;
 import com.nttdata.dto.TransferDto;
 import com.nttdata.model.Transaction;
 import com.nttdata.service.TransactionService;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController()
 @RequestMapping("/transaction")
@@ -57,6 +60,13 @@ public class TransactionController {
     public String createTransaction (@RequestBody TransferDto transferDto){
 		logger.info("TransactionController - createTransaction - TRANSFER DATA: {}" , transferDto);
 		return transactionService.createTransfer(transferDto);
+    }
+    
+    @GetMapping(value = "/getCommision",produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Flux<Transaction> getComissionByProductAndPeriod(@RequestBody ReporteComissionsDto dto){
+    	logger.info("TransactionController - getComissionByProductAndPeriod -  DATA: {}" , dto);
+        return transactionService.findByProductCodeAndPeriod(dto.getCodeProduct(), dto.getPeriod());
     }
 
 }

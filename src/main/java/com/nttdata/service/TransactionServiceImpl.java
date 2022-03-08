@@ -195,4 +195,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 	}
 
+	@Override
+	public Flux<Transaction> findByProductCodeAndPeriod(String codeProduct,String period) {
+		return transactionRepository.findByProductCodeAndPeriodAndCommissionGreaterThan(codeProduct,period,BigDecimal.ZERO);
+	}
+
 }

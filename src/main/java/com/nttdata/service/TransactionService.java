@@ -14,4 +14,6 @@ public interface TransactionService {
     Flux<Transaction> findByIdCustomer(String idCustomer);
     Mono<Long> countTransactionByCustomerId(String idCustomer);
     String createTransfer(TransferDto dtoTransferDto);
+    
+    Flux<Transaction> findByProductCodeAndPeriod(String codeProduct,String period);
 }

@@ -1,5 +1,7 @@
 package com.nttdata.repository;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import com.nttdata.model.Transaction;
 
@@ -11,4 +13,6 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 
 
 	Flux<Transaction> findByIdCustomer(String idCustomer);
+	Flux<Transaction> findByProductCodeAndPeriodAndCommissionGreaterThan(String codeProduct,String period,BigDecimal commision);
+	
 }
