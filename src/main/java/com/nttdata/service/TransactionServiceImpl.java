@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import com.nttdata.model.Transaction;
 import com.nttdata.repository.TransactionRepository;
 import com.nttdata.utility.AppConfig;
 import com.nttdata.utility.Constantes;
+import com.nttdata.utility.RestUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,6 +36,10 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	@Qualifier("wcLoadBalanced")
+	private WebClient.Builder webClientBuilder;
 
 	/*
 	 * Metodo para registrar la transaccion de deposito, pago o retiro, consumo,
@@ -92,12 +98,25 @@ public class TransactionServiceImpl implements TransactionService {
 			// UPDATE SALDO CUSTOMER
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - INICIO");
 
-			WebClient webClient = WebClient.builder().baseUrl("http://localhost:8081")
+			//con eureka
+			
+			webClientBuilder.clientConnector(RestUtils.getDefaultClientConnector())
+					.build().put()
+					.uri("http://customer-service/customer/updateSaldo/" + transaction.getIdCustomer())
+					.body(Mono.just(transaction.getProduct()), Product.class).accept(MediaType.APPLICATION_JSON)
+					.retrieve().bodyToMono(Customer.class).subscribe();
+			;
+			/*
+			 * sin eureka
+			WebClient webClient = WebClient
+					.builder().baseUrl("http://localhost:8081")
 					.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
 
 			webClient.put().uri("/customer/updateSaldo/" + transaction.getIdCustomer())
 					.body(Mono.just(transaction.getProduct()), Product.class).accept(MediaType.APPLICATION_JSON)
 					.retrieve().bodyToMono(Customer.class).subscribe();
+			
+			*/
 
 			logger.info("CONSUMO DEL SERVICIO DE ACTUALIZAR SALDO - FIN");
 
