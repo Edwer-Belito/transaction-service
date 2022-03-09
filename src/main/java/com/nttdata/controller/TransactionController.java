@@ -62,7 +62,7 @@ public class TransactionController {
 		return transactionService.createTransfer(transferDto);
     }
     
-    @GetMapping(value = "/getCommision",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getCommision",produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Flux<Transaction> getComissionByProductAndPeriod(@RequestBody ReporteComissionsDto dto){
     	logger.info("TransactionController - getComissionByProductAndPeriod -  DATA: {}" , dto);
