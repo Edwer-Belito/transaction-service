@@ -6,14 +6,12 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -146,6 +144,11 @@ class TransactionServiceImplTest {
 		
 		String msg = "Transfer succesfull";
 		
+		Transaction transaction = new Transaction();
+		transaction.setMovementType("TRANSFER");
+		transaction.setProduct(new Product());
+		transaction.getProduct().setCode("010");
+		
 		TransferDto transferDto = new TransferDto();
 		transferDto.setMovementType("TRANSFER");
 		transferDto.setAmount(BigDecimal.TEN);
@@ -169,7 +172,7 @@ class TransactionServiceImplTest {
 		
 
 		
-		//when(transactionService1.createTransaction(any())).thenReturn("ok");
+		when(transactionService.createTransaction(transaction)).thenReturn("ok");
 		String msg2 = transactionService.createTransfer(transferDto);
 		assertEquals(msg, msg2,"Test failure");
 	}

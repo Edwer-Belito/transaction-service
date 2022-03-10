@@ -1,62 +1,64 @@
-#spring:
-#  application:
-#    name: transaction-service
-#  config:
-#    import: optional:configserver:http://config-server-service:9010
-#  cloud:
-#    config:
-#      profile: dev
-server:
-  port: 8082
-
 spring:
-  data:
-    mongodb:
-      database: transactionBD
-      host: mongoDB
-      port: 27017
   application:
     name: transaction-service
+  config:
+    import: optional:configserver:http://config-server-service:9010
   cloud:
     config:
-      enabled: false
+      profile: dev
 
-#Actuator - dev
-management:
-  endpoints:
-    enabled-by-default: false
-    web:
-      exposure:
-        include: health, info, refresh, restart, env
-  endpoint:
-    health:
-      enabled: true
-    info:
-      enabled: true
-    refresh:
-      enabled: true
-    restart:
-      enabled: true
-    env:
-      enabled: true
-  
-#Variables - dev
-application:
-  location: config (GITHUB) DEV
-  config:
-    profile: dev
-    description: enviroment dev from transaction-service-dev.yml - REFRESH ACTUATOR
-    
-  operation:
-    deposit: DEPOSITO
-    retirement: RETIRO
-    payment: PAGO
-    consumption: CONSUMO
-    numberOperationAllowed: 4
-    commision: 30.00
+
+#server:
+#  port: 8082
+#
+#spring:
+#  data:
+#    mongodb:
+#      database: transactionBD
+#      host: mongoDB
+#      port: 27017
+#  application:
+#    name: transaction-service
+#  cloud:
+#    config:
+#      enabled: false
+#
+##Actuator - dev
+#management:
+#  endpoints:
+#    enabled-by-default: false
+#    web:
+#      exposure:
+#        include: health, info, refresh, restart, env
+#  endpoint:
+#    health:
+#      enabled: true
+#    info:
+#      enabled: true
+#    refresh:
+#      enabled: true
+#    restart:
+#      enabled: true
+#    env:
+#      enabled: true
+#  
+##Variables - dev
+#application:
+#  location: config (GITHUB) DEV
+#  config:
+#    profile: dev
+#    description: enviroment dev from transaction-service-dev.yml - REFRESH ACTUATOR
+#    
+#  operation:
+#    deposit: DEPOSITO
+#    retirement: RETIRO
+#    payment: PAGO
+#    consumption: CONSUMO
+#    numberOperationAllowed: 4
+#    commision: 30.00
 
     
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server-service:8761/eureka
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://eureka-server-service:8761/eureka
