@@ -25,7 +25,7 @@
 		<sonar.language>java</sonar.language>
 		
 		<!-- checkstyle -->
-		<checkstyle.skip>false</checkstyle.skip>
+		<checkstyle.skip>true</checkstyle.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -142,6 +142,11 @@
 					<output>file</output>
 					<append>true</append>
 					<excludes>
+						<exclude>com/nttdata/model/**</exclude>
+						<exclude>com/nttdata/config/**</exclude>
+						<exclude>com/nttdata/common/**</exclude>
+						<exclude>com/nttdata/dto/**</exclude>
+						<exclude>com/nttdata/utility/**</exclude>
 						<exclude>*MethodAccess</exclude>
 					</excludes>
 				</configuration>
